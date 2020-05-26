@@ -29,7 +29,7 @@ import com.socialmedia.userservice.model.User;
 @RestController
 @CrossOrigin
 public class UserController {
-	
+
 	@Autowired
 	private QueueProducer queueProducer;
 
@@ -46,14 +46,23 @@ public class UserController {
 
 		System.out.println("user pass word -" + user.getPassword());
 		Map<String, String> response = new HashMap<String, String>();
-		
-		User _user = UserRepository.save(user);
 
+		User _user = UserRepository.save(user);
 
 		if (_user != null) {
 
 			response.put("message", "User save successfully ");
+
+			NotificationDTO notificationDTO = new NotificationDTO("SendMail", user.getUsername());
+			try {
+				queueProducer.produce(notificationDTO);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			return ResponseEntity.accepted().body(response);
+
 		}
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(_user.getUserId())
@@ -105,9 +114,8 @@ public class UserController {
 
 		Map<String, String> response = new HashMap<String, String>();
 		response.put("message", "User Delete successfully ");
-		
 
-		 NotificationDTO notificationDTO = new  NotificationDTO("UserDeleted", id);
+		NotificationDTO notificationDTO = new NotificationDTO("UserDeleted", id);
 		try {
 			queueProducer.produce(notificationDTO);
 		} catch (Exception e) {

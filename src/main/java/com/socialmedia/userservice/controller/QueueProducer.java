@@ -29,6 +29,5 @@ public class QueueProducer {
 		rabbitTemplate.convertAndSend(new ObjectMapper().writeValueAsString(notificationDTO));
 		logger.info("Notification stored in queue sucessfully");
 	}
-	
 
 }

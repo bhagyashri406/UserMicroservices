@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.validation.constraints.Email;
 
 @Table(name = "user")
@@ -18,8 +19,8 @@ public class User {
 	@GeneratedValue
 	private int userId;
 
-	@NotNull
 	@Column(unique = true)
+	@NotEmpty
 	@Email
 	private String username;
 
