@@ -30,6 +30,8 @@ import com.socialmedia.userservice.model.User;
 @CrossOrigin
 public class UserController {
 
+	String EVENT_SEND_MAIL = "SendMail";
+	String EVENT_USER_DELETE = "UserDeleted";
 	@Autowired
 	private QueueProducer queueProducer;
 
@@ -53,7 +55,7 @@ public class UserController {
 
 			response.put("message", "User save successfully ");
 
-			NotificationDTO notificationDTO = new NotificationDTO("SendMail", user.getUsername());
+			NotificationDTO notificationDTO = new NotificationDTO(EVENT_SEND_MAIL, user.getUsername());
 			try {
 				queueProducer.produce(notificationDTO);
 			} catch (Exception e) {
@@ -115,7 +117,7 @@ public class UserController {
 		Map<String, String> response = new HashMap<String, String>();
 		response.put("message", "User Delete successfully ");
 
-		NotificationDTO notificationDTO = new NotificationDTO("UserDeleted", id);
+		NotificationDTO notificationDTO = new NotificationDTO(EVENT_USER_DELETE, id);
 		try {
 			queueProducer.produce(notificationDTO);
 		} catch (Exception e) {
